@@ -3,7 +3,7 @@
 Professional inventory management system for pubs and bars.
 
 ## 🚀 Live Demo
-https://pubstock-manager-eo8lspaej-serena293s-projects.vercel.app/
+**[🔗 View live](https://pubstock-manager-eo8lspaej-serena293s-projects.vercel.app/)**
 
 ## ✨ Features
 - **Real-time inventory tracking** with low stock alerts
@@ -28,7 +28,7 @@ src/
 
 
 ## 🚦 Getting Started
-1. Clone repo: `git clone [url]`
+1. Clone repo: `git clone [git clone https://github.com/Serena293/pubstock-manager.git]`
 2. Install: `npm install`
 3. Set up Supabase: Create project and copy credentials to `.env`
 4. Run: `npm run dev`
@@ -41,3 +41,5 @@ src/
 
 ## 🤝 Contributing
 Open to suggestions and improvements!
+
+

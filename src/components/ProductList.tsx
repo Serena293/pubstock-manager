@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabasaClient'
+import jsPDF from 'jspdf'
 
 type Product = {
   id: number
@@ -175,47 +176,77 @@ export default function ProductList() {
   }
 
   // Create pdf
-  const generateSupplierOrder = () => {
-    const lowStockProducts = getFilteredProducts().filter(p => 
-      (p.quantity || 0) < (p.min_threshold || 0)
-    )
-    
-    if (lowStockProducts.length === 0) {
-      alert('No products need restocking!')
-      return
-    }
-    
-    let orderText = 'SUPPLIER ORDER - PubStock Manager\n'
-    orderText += '='.repeat(40) + '\n\n'
-    
-    lowStockProducts.forEach(product => {
-      const currentQty = product.quantity || 0
-      const minQty = product.min_threshold || 0
-      const toOrder = minQty * 2 - currentQty 
-      
-      orderText += `${product.name || 'Unknown'}\n`
-      orderText += `  Current: ${currentQty} | Minimum: ${minQty}\n`
-      orderText += `  Order: ${toOrder} units\n`
-      orderText += `  Category: ${product.category || 'N/A'}\n`
-      if (product.price) {
-        orderText += `  Est. Cost: £${(toOrder * product.price).toFixed(2)}\n`
-      }
-      orderText += '\n'
-    })
-    
-   //create and download file
-    const blob = new Blob([orderText], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `supplier-order-${new Date().toISOString().split('T')[0]}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-    
-    alert(`Supplier order generated for ${lowStockProducts.length} products!`)
+const generateSupplierOrder = () => {
+  const lowStockProducts = getFilteredProducts().filter(
+    p => (p.quantity || 0) < (p.min_threshold || 0)
+  )
+
+  if (lowStockProducts.length === 0) {
+    alert('No products need restocking!')
+    return
   }
+
+  const doc = new jsPDF()
+  let y = 20
+
+  // Title
+  doc.setFontSize(16)
+  doc.text('SUPPLIER ORDER - PubStock Manager', 14, y)
+  y += 10
+
+  doc.setFontSize(10)
+  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, y)
+  y += 10
+
+  doc.setFontSize(12)
+
+  lowStockProducts.forEach((product, index) => {
+    const currentQty = product.quantity || 0
+    const minQty = product.min_threshold || 0
+    const toOrder = minQty * 2 - currentQty
+
+    // Page break
+    if (y > 270) {
+      doc.addPage()
+      y = 20
+    }
+
+    doc.text(`${index + 1}. ${product.name || 'Unknown product'}`, 14, y)
+    y += 6
+
+    doc.setFontSize(10)
+    doc.text(`Category: ${product.category || 'N/A'}`, 18, y)
+    y += 5
+
+    doc.text(
+      `Current: ${currentQty} | Minimum: ${minQty} | Order: ${toOrder} units`,
+      18,
+      y
+    )
+    y += 5
+
+    if (product.price) {
+      doc.text(
+        `Estimated cost: £${(toOrder * product.price).toFixed(2)}`,
+        18,
+        y
+      )
+      y += 5
+    }
+
+    y += 4
+    doc.setFontSize(12)
+  })
+
+  const fileName = `supplier-order-${new Date()
+    .toISOString()
+    .split('T')[0]}.pdf`
+
+  doc.save(fileName)
+
+  alert(`Supplier order generated for ${lowStockProducts.length} products!`)
+}
+
 
   // filter product
   const getFilteredProducts = () => {
@@ -257,7 +288,7 @@ export default function ProductList() {
   }
 
   return (
-    <div>
+    <div >
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>

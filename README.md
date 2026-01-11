@@ -3,7 +3,7 @@
 Professional inventory management system for pubs and bars.
 
 ## 🚀 Live Demo
-[Link al deploy su Vercel]
+https://pubstock-manager-eo8lspaej-serena293s-projects.vercel.app/
 
 ## ✨ Features
 - **Real-time inventory tracking** with low stock alerts
@@ -34,7 +34,9 @@ src/
 4. Run: `npm run dev`
 
 ## 📸 Screenshots
-![Home Page]()
+<img src="src/assets/Screenshot_1.png" alt="Home Page" width="300"/>
+<img src="src/assets/Screenshot_2.png" alt="Home Page" width="300"/>
+<img src="src/assets/Screenshot_3.png" alt="Home Page" width="300"/>
 
 
 ## 🤝 Contributing
